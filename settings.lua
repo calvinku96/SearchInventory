@@ -1,0 +1,17 @@
+data:extend{
+    {
+        type="int-setting",
+        name="search-inventory-min-letter",
+        setting_type="runtime-global",
+        default_value=2,
+        maximum_value=10,
+        minimum_value=0
+    },
+    {
+        type="int-setting",
+        name="search-inventory-scroll-pane-max-height",
+        setting_type="runtime-global",
+        default_value=250,
+        minimum_value=1
+    }
+}
