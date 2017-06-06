@@ -31,8 +31,9 @@ local function gui_toggle_frame(player)
     local frame = flow.search_inventory_frame
     if frame then
         frame.destroy()
-        global["selected_entity"] = nil
+        global["selected_entity"][player.name] = nil
     else
+        global["selected_entity"] = global["selected_entity"] or {}
         -- Build Gui
         frame = flow.add{
             type="frame",
@@ -45,10 +46,10 @@ local function gui_toggle_frame(player)
             name="search_inventory_textfield",
             text=""
         }
-        global["selected_entity"] = player.selected
+        global["selected_entity"][player.name] = player.selected
         local entity_name
-        if global["selected_entity"] then 
-            entity_name = global["selected_entity"].localised_name
+        if global["selected_entity"][player.name] then 
+            entity_name = global["selected_entity"][player.name].localised_name
         end
         frame.add{
             type="label",
@@ -98,7 +99,7 @@ end
 
 local function search_inventory(player, frame, text, inventory, multiplier)
     multiplier = multiplier or 1
-    local entity = global["selected_entity"]
+    local entity = global["selected_entity"][player.name]
     local items = get_LuaInventory(inventory, player, entity)
     if not items then return end
 
@@ -185,7 +186,7 @@ local function on_search_inventory_changed(player, text)
     text = text:lower():gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1"):gsub(" ", "%%-")
 
     local categories = {"quickbar", "main", "trash"}
-    local entity = global["selected_entity"]
+    local entity = global["selected_entity"][player.name]
     if entity then
         if entity.type == "assembling-machine" then
             table.insert(categories, "assemblingmachineinput")
@@ -215,7 +216,7 @@ local function on_search_inventory_changed(player, text)
 end
 
 local function transfer_item_to_cursor(player, inventory, item_name)
-    local entity = global["selected_entity"]
+    local entity = global["selected_entity"][player.name]
     if not player.clean_cursor() then
         game.player.print{"search-inventory-clean-cursor-fail"}
     end
